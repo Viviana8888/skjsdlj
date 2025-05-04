@@ -23,7 +23,6 @@
       border: 1px solid #ccc;
       padding: 8px;
       text-align: center;
-
     }
 
     input {
@@ -41,25 +40,22 @@
     }
   </style>
 </head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <body>
-  <h1>Harga mami</h1>
+  <h1>Harga Mami</h1></h1>
   <table>
     <thead>
       <tr>
         <th>No.</th>
         <th>Angka</th>
-        <th>Harga</th>
-        <th>Setelah Diskon</th>
+        <th>Harga 25%</th></th>
+        <th>Harga 23%</th>
+        <th>Harga Diskon</th>
       </tr>
     </thead>
-    <tbody id="priceTable">
-      <!-- Rows will be added here -->
-    </tbody>
+    <tbody id="priceTable"></tbody>
     <tfoot>
       <tr>
-        <td colspan="3">Harga Diskon:</td>
+        <td colspan="4">Harga total Diskon:</td>
         <td id="totalDiscount">Rp0.00</td>
       </tr>
     </tfoot>
@@ -72,7 +68,6 @@
     function createRow(index) {
       const row = document.createElement('tr');
 
-      // Row number
       const rowNumberCell = document.createElement('td');
       rowNumberCell.textContent = index + 1;
 
@@ -84,40 +79,61 @@
       priceInput.type = 'number';
       priceInput.min = 0;
 
+      const altPriceInput = document.createElement('input');
+      altPriceInput.type = 'number';
+      altPriceInput.min = 0;
+
       const discountedCell = document.createElement('td');
       discountedCell.className = 'discounted';
       discountedCell.textContent = 'Rp0.00';
 
-      const td1 = document.createElement('td');
-      td1.appendChild(codeInput);
-      const td2 = document.createElement('td');
-      td2.appendChild(priceInput);
+      const tdCode = document.createElement('td');
+      const tdPrice = document.createElement('td');
+      const tdAltPrice = document.createElement('td');
 
-      row.appendChild(rowNumberCell); // Row counter cell
-      row.appendChild(td1);
-      row.appendChild(td2);
+      tdCode.appendChild(codeInput);
+      tdPrice.appendChild(priceInput);
+      tdAltPrice.appendChild(altPriceInput);
+
+      row.appendChild(rowNumberCell);
+      row.appendChild(tdCode);
+      row.appendChild(tdPrice);
+      row.appendChild(tdAltPrice);
       row.appendChild(discountedCell);
 
       function recalculate() {
         const code = codeInput.value.trim();
         const price = parseFloat(priceInput.value);
+        const altPrice = parseFloat(altPriceInput.value);
         let discount = 0;
+        let activePrice = null;
 
-        if (!isNaN(price)) {
-          if (/^\d{2}$/.test(code)) {
-            discount = 0.25;
-          } else if (/^\d{3,4}$/.test(code)) {
-            discount = 0.5;
-          }
+        // Ensure only one price column is used
+        if (!isNaN(price) && isNaN(altPrice)) {
+          priceInput.disabled = false;
+          altPriceInput.disabled = true;
+          activePrice = price;
+          if (/^\d{2}$/.test(code)) discount = 0.25;
+          if (/^\d{3,4}$/.test(code)) discount = 0.5;
+        } else if (!isNaN(altPrice) && isNaN(price)) {
+          priceInput.disabled = true;
+          altPriceInput.disabled = false;
+          activePrice = altPrice;
+          if (/^\d{2}$/.test(code)) discount = 0.23;
+          if (/^\d{3,4}$/.test(code)) discount = 0.5;
+        } else {
+          priceInput.disabled = false;
+          altPriceInput.disabled = false;
         }
 
-        const discounted = !isNaN(price) ? price * (1 - discount) : 0;
+        const discounted = activePrice ? activePrice * (1 - discount) : 0;
         discountedCell.textContent = `Rp${discounted.toFixed(2)}`;
         updateTotal();
       }
 
       codeInput.addEventListener('input', recalculate);
       priceInput.addEventListener('input', recalculate);
+      altPriceInput.addEventListener('input', recalculate);
 
       return row;
     }
@@ -125,16 +141,19 @@
     function updateTotal() {
       let total = 0;
       [...tableBody.rows].forEach(row => {
-        const value = row.cells[3].textContent.replace('Rp', '');
+        const value = row.cells[4].textContent.replace('Rp', '');
         total += parseFloat(value) || 0;
       });
       totalCell.textContent = `Rp${total.toFixed(2)}`;
     }
 
-    // Add 10 rows
     for (let i = 0; i < 100; i++) {
       tableBody.appendChild(createRow(i));
     }
+    
+  
   </script>
+  
+  <h1> mami beliin figur </h1>
 </body>
 </html>
