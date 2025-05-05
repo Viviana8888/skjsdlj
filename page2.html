@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Discount Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: center;
+    }
+
+    input {
+      width: 90%;
+      padding: 4px;
+    }
+
+    .discounted {
+      background-color: #d1f7d1;
+    }
+
+    tfoot td {
+      font-weight: bold;
+      background-color: #e0ffe0;
+    }
+  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+</head>
+
+
+<body>
+  <h1>Harga Mami</h1></h1>
+  <table>
+    <thead>
+      <tr>
+        <th>No.</th>
+        <th>Angka</th>
+        <th>Harga 25%</th></th>
+        <th>Harga 23%</th>
+        <th>Harga Diskon</th>
+      </tr>
+    </thead>
+    <tbody id="priceTable"></tbody>
+    <tfoot>
+      <tr>
+        <td colspan="4">Harga total Diskon:</td>
+        <td id="totalDiscount">Rp0.00</td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <script>
+    const tableBody = document.getElementById('priceTable');
+    const totalCell = document.getElementById('totalDiscount');
+
+    function createRow(index) {
+      const row = document.createElement('tr');
+
+      const rowNumberCell = document.createElement('td');
+      rowNumberCell.textContent = index + 1;
+
+      const codeInput = document.createElement('input');
+      codeInput.type = 'text';
+      codeInput.maxLength = 4;
+
+      const priceInput = document.createElement('input');
+      priceInput.type = 'number';
+      priceInput.min = 0;
+
+      const altPriceInput = document.createElement('input');
+      altPriceInput.type = 'number';
+      altPriceInput.min = 0;
+
+      const discountedCell = document.createElement('td');
+      discountedCell.className = 'discounted';
+      discountedCell.textContent = 'Rp0.00';
+
+      const tdCode = document.createElement('td');
+      const tdPrice = document.createElement('td');
+      const tdAltPrice = document.createElement('td');
+
+      tdCode.appendChild(codeInput);
+      tdPrice.appendChild(priceInput);
+      tdAltPrice.appendChild(altPriceInput);
+
+      row.appendChild(rowNumberCell);
+      row.appendChild(tdCode);
+      row.appendChild(tdPrice);
+      row.appendChild(tdAltPrice);
+      row.appendChild(discountedCell);
+
+      function recalculate() {
+        const code = codeInput.value.trim();
+        const price = parseFloat(priceInput.value);
+        const altPrice = parseFloat(altPriceInput.value);
+        let discount = 0;
+        let activePrice = null;
+
+        // Ensure only one price column is used
+        if (!isNaN(price) && isNaN(altPrice)) {
+          priceInput.disabled = false;
+          altPriceInput.disabled = true;
+          activePrice = price;
+          if (/^\d{2}$/.test(code)) discount = 0.25;
+          if (/^\d{3,4}$/.test(code)) discount = 0.5;
+        } else if (!isNaN(altPrice) && isNaN(price)) {
+          priceInput.disabled = true;
+          altPriceInput.disabled = false;
+          activePrice = altPrice;
+          if (/^\d{2}$/.test(code)) discount = 0.23;
+          if (/^\d{3,4}$/.test(code)) discount = 0.5;
+        } else {
+          priceInput.disabled = false;
+          altPriceInput.disabled = false;
+        }
+
+        const discounted = activePrice ? activePrice * (1 - discount) : 0;
+        discountedCell.textContent = `Rp${discounted.toFixed(2)}`;
+        updateTotal();
+      }
+
+      codeInput.addEventListener('input', recalculate);
+      priceInput.addEventListener('input', recalculate);
+      altPriceInput.addEventListener('input', recalculate);
+
+      return row;
+    }
+
+    function updateTotal() {
+      let total = 0;
+      [...tableBody.rows].forEach(row => {
+        const value = row.cells[4].textContent.replace('Rp', '');
+        total += parseFloat(value) || 0;
+      });
+      totalCell.textContent = `Rp${total.toFixed(2)}`;
+    }
+
+    for (let i = 0; i < 100; i++) {
+      tableBody.appendChild(createRow(i));
+    }
+    
+  
+  </script>
+  
+  <h1>mami beliin figur <a href="https://id.shp.ee/H3tXKkL" style="color: blue;" target="_blank">Ultraman Decker yang ini</a> dong</h1>
+<h1> plis plis plis mami klik linknya 🥺</h1>
+<h1> murah pls pls pls tanggal 5.5</h1>
+</body>
+</html>
